@@ -1,8 +1,32 @@
 #!/bin/bash
 
-sudo su
+EXT_IF_NAME="ens3"
+EXT_IP="ExtIP";
+EXT_PORT="ExtPort";
+CLIENT_Q=10
+
 apt update && apt upgrade -y && apt install wireguard -y
+
 [ ! -d /etc/wireguard ] && mkdir /etc/wireguard
-cd /etc/wireguard; umask 077; wg genkey | tee wg0-private.key | wg pubkey > wg0-public.key
-mkdir /etc/wireguard/clients && cd "$_"
-for N in {1..10}; do umask 077; wg genkey | tee wg0-client$N-private.key | wg pubkey > wg0-client$N-public.key && wg genpsk > wg0-client$N-preshared.key; done
+umask 077; wg genkey | tee /etc/wireguard/wg0-private.key | wg pubkey > /etc/wireguard/wg0-public.key;
+
+[ ! -d /etc/wireguard/clients ] && mkdir /etc/wireguard/clients
+for N in $(seq 1 $CLIENT_Q); do
+  umask 077; wg genkey | tee /etc/wireguard/clients/wg0-client$N-private.key | wg pubkey > /etc/wireguard/clients/wg0-client$N-public.key && wg genpsk > /etc/wireguard/clients/wg0-client$N-preshared.key;
+done
+
+INT_IP="10.121.19.1/24"
+SRV_PUBLIC=$(cat /etc/wireguard/wg0-public.key);
+
+printf "[Interface]\nAddress = $INT_IP\nListenPort = $EXT_PORT\nPrivateKey = $(cat /etc/wireguard/wg0-private.key)\nPostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -s $INT_IP -o $EXT_IF_NAME -j MASQUERADE\nPostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -s $INT_IP -o $EXT_IF_NAME -j MASQUERADE\n" > /etc/wireguard/wg0.conf
+
+for N in $(seq 1 $CLIENT_Q); do
+  CLIENT_PRIVATE=$(cat /etc/wireguard/clients/wg0-client$N-private.key);
+  CLIENT_PUBLIC=$(cat /etc/wireguard/clients/wg0-client$N-public.key);
+  CLIENT_PSK=$(cat /etc/wireguard/clients/wg0-client$N-preshared.key);
+  printf "\n[Peer]\nPublicKey = $CLIENT_PUBLIC\nPresharedKey = $CLIENT_PSK\nAllowedIPs = 10.121.19.$(expr 1 + $N)/32\n" >> /etc/wireguard/wg0.conf;
+  printf "[Interface]\nPrivateKey = $CLIENT_PRIVATE\nAddress = 10.121.19.$(expr 1 + $N)/32\nDNS = 1.1.1.1, 1.0.0.1\n\n[Peer]\nPublicKey = $SRV_PUBLIC\nPresharedKey = $CLIENT_PSK\nAllowedIPs = 0.0.0.0/0\nEndpoint = $EXT_IP:$EXT_PORT\nPersistentKeepalive = 25\n" > /etc/wireguard/clients/wg0-client$N.conf;
+done
+
+sed -i '/net.ipv4.ip_forward/s/^#//g' /etc/sysctl.conf
+sysctl -p
