@@ -1,3 +1,6 @@
-sudo apt update && sudo apt upgrade -y && sudo apt install wireguard -y
-[ ! -d /etc/wireguard ] && sudo mkdir /etc/wireguard
-cd /etc/wireguard; sudo umask 077; sudo wg genkey | sudo tee wg0-private.key | sudo wg genpub > wg0-public.key
+sudo su
+apt update && apt upgrade -y && apt install wireguard -y
+[ ! -d /etc/wireguard ] && mkdir /etc/wireguard
+cd /etc/wireguard; umask 077; wg genkey | tee wg0-private.key | wg genpub > wg0-public.key
+mkdir clients && cd "$_"
+for N in {1..10}; do umask 077; wg genkey | tee wg0-client$N-private.key | wg genpub > wg0-client$N-public.key && wg genpsk > wg0-client$N-preshared.key
