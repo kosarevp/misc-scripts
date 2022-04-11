@@ -1,10 +1,13 @@
 #!/bin/bash
+#Automatic WireGuard installation & configuration for Ubuntu 20.04
 
+#SET YOUR VALUES
 EXT_IF_NAME="ens3"
 EXT_IP="ExtIP";
 EXT_PORT="ExtPort";
 CLIENT_Q=10
 
+#DO NOT CHANGE BELOW
 apt update && apt upgrade -y && apt install wireguard -y
 
 [ ! -d /etc/wireguard ] && mkdir /etc/wireguard
