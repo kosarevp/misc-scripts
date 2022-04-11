@@ -33,3 +33,5 @@ done
 
 sed -i '/net.ipv4.ip_forward/s/^#//g' /etc/sysctl.conf
 sysctl -p
+
+wg syncconf wg0 <(wg-quick strip wg0)
