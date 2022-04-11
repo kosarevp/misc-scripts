@@ -1,0 +1,3 @@
+sudo apt update && sudo apt upgrade -y && sudo apt install wireguard -y
+sudo mkdir /etc/wireguard && cd "$_"
+sudo umask 077; sudo wg genkey | sudo tee wg0-private.key | sudo wg genpub > wg0-public.key
