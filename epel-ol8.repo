@@ -1,0 +1,6 @@
+[ol8_epel]
+name=Oracle Linux 8 EPEL (x86_64)
+baseurl=https://yum$ociregion.$ocidomain/repo/OracleLinux/OL8/developer/EPEL/x86_64
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
+gpgcheck=1
+enabled=1
