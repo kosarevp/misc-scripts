@@ -33,7 +33,7 @@ for N in $(seq 1 $CLIENT_Q); do
 done
 
 systemctl enable --now wg-quick@wg0
-#wg syncconf wg0 <(wg-quick strip wg0)
+wg syncconf wg0 <(wg-quick strip wg0)
 
 sed -i '/net.ipv4.ip_forward/s/^#//g' /etc/sysctl.conf
 sysctl -p
