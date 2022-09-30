@@ -1,5 +1,6 @@
 #!/bin/bash
 #Automatic WireGuard installation & configuration for Ubuntu 20.04
+#(should work for 22.04 also)
 
 #SET YOUR VALUES
 EXT_IF_NAME="ens3" #name of external interface
