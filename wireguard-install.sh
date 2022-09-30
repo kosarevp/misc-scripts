@@ -3,7 +3,7 @@
 
 #SET YOUR VALUES
 EXT_IF_NAME="ens3"
-EXT_IP="ExtIP";
+EXT_IP="ExtIP"; #X.X.X.X format, without CIDR notation
 EXT_PORT="ExtPort";
 CLIENT_Q=10
 
@@ -31,7 +31,8 @@ for N in $(seq 1 $CLIENT_Q); do
   printf "[Interface]\nPrivateKey = $CLIENT_PRIVATE\nAddress = 10.121.19.$(expr 1 + $N)/32\nDNS = 1.1.1.1, 1.0.0.1\n\n[Peer]\nPublicKey = $SRV_PUBLIC\nPresharedKey = $CLIENT_PSK\nAllowedIPs = 0.0.0.0/0\nEndpoint = $EXT_IP:$EXT_PORT\nPersistentKeepalive = 25\n" > /etc/wireguard/clients/wg0-client$N.conf;
 done
 
-wg syncconf wg0 <(wg-quick strip wg0)
+systemctl enable --now wg-quick@wg0
+#wg syncconf wg0 <(wg-quick strip wg0)
 
 sed -i '/net.ipv4.ip_forward/s/^#//g' /etc/sysctl.conf
 sysctl -p
