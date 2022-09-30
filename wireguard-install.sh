@@ -2,10 +2,10 @@
 #Automatic WireGuard installation & configuration for Ubuntu 20.04
 
 #SET YOUR VALUES
-EXT_IF_NAME="ens3"
+EXT_IF_NAME="ens3" #name of external interface
 EXT_IP="ExtIP"; #X.X.X.X format, without CIDR notation
-EXT_PORT="ExtPort";
-CLIENT_Q=10
+EXT_PORT="ExtPort"; #any port from range 1024 - 65535
+CLIENT_Q=10 #clients quantity
 
 #DO NOT CHANGE BELOW
 apt update && apt upgrade -y && apt install wireguard -y
