@@ -4,7 +4,7 @@
 
 #SET YOUR VALUES
 EXT_IF_NAME="ens3" #name of external interface
-EXT_IP="ExtIP"; #X.X.X.X format, without CIDR notation
+EXT_IP="ExtIP"; #external in in X.X.X.X format, without CIDR notation
 EXT_PORT="ExtPort"; #any port from range 1024 - 65535
 CLIENT_Q=10 #clients quantity
 
