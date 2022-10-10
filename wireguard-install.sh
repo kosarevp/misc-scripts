@@ -1,6 +1,7 @@
 #!/bin/bash
 #Automatic WireGuard installation & configuration for Ubuntu 20.04
 #(should work for 22.04 also)
+#please run as root
 
 #SET YOUR VALUES
 EXT_IF_NAME="ens3" #name of external interface
@@ -30,7 +31,7 @@ for N in $(seq 1 $CLIENT_Q); do
   CLIENT_PSK=$(cat /etc/wireguard/clients/wg0-client$N-preshared.key);
   printf "\n[Peer]\nPublicKey = $CLIENT_PUBLIC\nPresharedKey = $CLIENT_PSK\nAllowedIPs = 10.121.19.$(expr 1 + $N)/32\n" >> /etc/wireguard/wg0.conf;
   printf "[Interface]\nPrivateKey = $CLIENT_PRIVATE\nAddress = 10.121.19.$(expr 1 + $N)/32\nDNS = 1.1.1.1, 1.0.0.1\n\n[Peer]\nPublicKey = $SRV_PUBLIC\nPresharedKey = $CLIENT_PSK\nAllowedIPs = 0.0.0.0/0\nEndpoint = $EXT_IP:$EXT_PORT\nPersistentKeepalive = 25\n" > /etc/wireguard/clients/wg0-client$N.conf;
-  qrencode -t png -o wg0-client$N.png -r wg0-client$N.conf 
+  qrencode -t png -o /etc/wireguard/clients/wg0-client$N.png -r /etc/wireguard/clients/wg0-client$N.conf 
 done
 
 systemctl enable --now wg-quick@wg0
