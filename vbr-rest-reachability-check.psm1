@@ -75,8 +75,3 @@ class VBRRESTAPI {
         Invoke-RestMethod -Uri ($this.Uri + '/oauth2/logout') -Method Post -Headers $headers
     }
 }
-
-# DisableSSLVerification
-# $VBR = [VBRRESTAPI]::new('veeam-vbr01.veeam.demo')
-# $VBR.auth($DomainUser, $DomainPassword)
-# $VBR.logOut()
