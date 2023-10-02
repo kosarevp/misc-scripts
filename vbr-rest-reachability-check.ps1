@@ -31,7 +31,7 @@ function WaitForReachability($VBRHost, [int]$Wait=10) {
     }
 }
 
-function ProcessRESTAPITasks($vAppNumber) {
+function ProcessRESTAPITasks() {
     DisableSSLVerification
     WaitForReachability('someVBRhost')
 }
