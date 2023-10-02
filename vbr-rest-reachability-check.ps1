@@ -1,4 +1,4 @@
-using module '.\vbr-rest-api.psm1'
+using module '.\vbr-rest-reachability-check.psm1'
 
 function DisableSSLVerification() {
 add-type @"
